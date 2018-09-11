@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="user" label="User" language="en" table="var__m_topic_variable_f6698a50db24a740a9b45b3e5e9619a8">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>user</element>
+            <help/>
+            <hint/>
+            <label>User</label>
+            <language>en</language>
+            <name>var__m_topic_variable_f6698a50db24a740a9b45b3e5e9619a8</name>
+            <plural>User</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>jay.freise@servicenow.com</sys_created_by>
+            <sys_created_on>2018-09-10 19:46:26</sys_created_on>
+            <sys_id>43690e50db24a740a9b45b3e5e961980</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>User</sys_name>
+            <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
+            <sys_update_name>sys_documentation_var__m_topic_variable_f6698a50db24a740a9b45b3e5e9619a8_user_en</sys_update_name>
+            <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
+            <sys_updated_on>2018-09-10 19:46:26</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_cb_topic">
+    <sys_cb_topic action="INSERT_OR_UPDATE">
+        <applicability/>
+        <connect_queue/>
+        <description>This topic will walk user through creating a suite of tests.</description>
+        <graph>{
+  "graph_api_version": "1.0.3",
+  "goals": {
+    "49cfa6452de245bc8189f28ccb4cf440": {
+      "id": "49cfa6452de245bc8189f28ccb4cf440",
+      "trigger": {
+        "type": "primary"
+      },
+      "name": "primary",
+      "applicability": "",
+      "description": "",
+      "nodes": {
+        "b9fb756f1dc041cab00654d12262178b": {
+          "id": "b9fb756f1dc041cab00654d12262178b",
+          "stepType": "Start",
+          "name": "Start",
+          "greetingResponse": {
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }\n    */\n    return 'Hi, ' + gs.getUser().getFirstName() + '. I can generate automated ATF tests for specific tables or an entire application.';\n})()\n",
+            "mode": "script"
+          }
+        },
+        "b58cc7f7a5774fcfa9d46aa62806dcfd": {
+          "id": "b58cc7f7a5774fcfa9d46aa62806dcfd",
+          "stepType": "TerminateGoal",
+          "name": "End",
+          "confirmationMessage": {
+            "value": "Your tests have been automatically generated.",
+            "mode": "simple"
+          }
+        },
+        "28abadbc9d8d4f19b2abd6b9d12676f3": {
+          "stepType": "ChoicePrompt",
+          "name": "SelectTarget",
+          "prompt": {
+            "value": "First, let me know what you want to generate tests for.",
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "Got it.",
+            "mode": "simple"
+          },
+          "applicability": "",
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "8741ccf2b12a493cadc41e71409d728f",
+          "id": "28abadbc9d8d4f19b2abd6b9d12676f3"
+        },
+        "7fab532e456c4cd69bda2bf9e496b919": {
+          "id": "7fab532e456c4cd69bda2bf9e496b919",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "61cef5a6c7754835ab3e2913d91d7ea5": {
+          "id": "61cef5a6c7754835ab3e2913d91d7ea5",
+          "name": "BuildAppSuite",
+          "script": "(function execute() {\n    /* Code your scripted action here. For example, you might update a \n       record based on conditional logic:\n    \n        if (vaVars.my_flag == 'say hello') {\n            vaInputs.selected_incident.short_description = 'hi there';\n        } else {\n            vaInputs.selected_incident.short_description = 'bye now';\n        }        \n        vaInputs.selected_incident.update();\n    */\n    var myATF =new AutoATF();\n    //myATF.CreateSuiteByApplication(vaInputs.namesuite,vaInputs.appname.getDisplayValue());\n    myATF.CreateSuiteByApplication('TestSuiteName1','Benchmark Client');\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": ""
+        },
+        "48f486bbf54e4c8ebd05dd623ba6065d": {
+          "stepType": "ReferenceChoicePrompt",
+          "name": "appName",
+          "prompt": {
+            "value": "Please select an Application scope.",
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": "",
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "3907e998400b432a8526fc0e185dd0bf",
+          "id": "48f486bbf54e4c8ebd05dd623ba6065d",
+          "mode": "external",
+          "script": "(function execute() {\n\n        var options = [];\n        var gr = new GlideRecord('sys_scope');\n        //gr.addEncodedQuery('active=true^numberSTARTSWITHINC001001');\n        //gr.setLimit(10);\n        gr.query();\n        while(gr.next()) {\n            options.push({ 'value': gr.getUniqueValue(), 'label': gr.getValue('name') });\n        }\n        return options;\n\n\n \n})()\n",
+          "noRecordsResponseMsg": {
+            "value": "You do not have access to any apps.",
+            "mode": "simple"
+          }
+        },
+        "176fb7cde2ee41b6ac8b4b116802928d": {
+          "id": "176fb7cde2ee41b6ac8b4b116802928d",
+          "stepType": "Prompt",
+          "name": "tableName",
+          "prompt": {
+            "value": "What is the table name (ex: kb_knowledge)?",
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "One sec...",
+            "mode": "simple"
+          },
+          "applicability": "",
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "707eb06a56e94fca87a2dc98097cbf7f"
+        },
+        "583982ccc63945ef8bc9a5e340212217": {
+          "id": "583982ccc63945ef8bc9a5e340212217",
+          "name": "BuildTest",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    vaVars.testID = myATF.GenerateTestsForTable(vaInputs.tablename);\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": ""
+        },
+        "dece5db3c5f044e08cae6e5bb3cf4f75": {
+          "id": "dece5db3c5f044e08cae6e5bb3cf4f75",
+          "stepType": "Decision",
+          "name": "Decision"
+        },
+        "e9a8d27058d142ad91b9765f97d508a2": {
+          "id": "e9a8d27058d142ad91b9765f97d508a2",
+          "stepType": "Prompt",
+          "name": "nameSuite",
+          "prompt": {
+            "value": "Give me a name for your Suite (Ex. ITSM).",
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "Gracias. Un Momento.",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": "",
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "a0cc58cb27874a89aedc971c8422ac82"
+        },
+        "1f498a32d4034c4cbbee65fbfeed8ba5": {
+          "id": "1f498a32d4034c4cbbee65fbfeed8ba5",
+          "stepType": "LinkOutput",
+          "name": "TestLink",
+          "url": {
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }4b65da8cdb686740a9b45b3e5e9619b9\n    */\n    return 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test.do%3Fsys_id%3D' + vaVars.testID;;\n})()\n",
+            "mode": "script"
+          },
+          "label": {
+            "value": "Auto-generated Test",
+            "mode": "simple"
+          },
+          "header": {
+            "value": "Here is the link to your test.",
+            "mode": "simple"
+          },
+          "applicability": ""
+        },
+        "a7a2e19ab4814cf0a3074951eccf69fd": {
+          "stepType": "ChoicePrompt",
+          "name": "suiteortest",
+          "prompt": {
+            "value": "Would you like to create a single test or suite of tests?",
+            "mode": "simple"
+          },
+          "confirmMessage": {
+            "value": "",
+            "mode": "simple"
+          },
+          "acknowledgeMsg": {
+            "value": "",
+            "mode": "simple"
+          },
+          "applicability": "",
+          "optional": false,
+          "defaultValue": {
+            "value": "",
+            "mode": "simple"
+          },
+          "variableId": "0fdcf39a4e1a4f2ba7f5f8964a63c53f",
+          "id": "a7a2e19ab4814cf0a3074951eccf69fd"
+        }
+      },
+      "edges": [
+        {
+          "id": "5f3d329730c44611bca8f5b9655eca80",
+          "edgeType": "Edge",
+          "source": "b9fb756f1dc041cab00654d12262178b",
+          "target": "dece5db3c5f044e08cae6e5bb3cf4f75",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "d9877006b4c64dbfb190d9deb84a4c79",
+          "edgeType": "Edge",
+          "source": "28abadbc9d8d4f19b2abd6b9d12676f3",
+          "target": "7fab532e456c4cd69bda2bf9e496b919",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "df2910fc866643e68c1cb010b0d1ad08",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return false;\n})()\n",
+          "label": "Cancel"
+        },
+        {
+          "id": "f8f6ea0dbe2c415a80ad746c246751b6",
+          "edgeType": "Edge",
+          "source": "61cef5a6c7754835ab3e2913d91d7ea5",
+          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "dd9ffd3a236747db9f3d23a97a38c10c",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "48f486bbf54e4c8ebd05dd623ba6065d",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    var returnValue = false;\n    if (vaInputs.selecttarget == 'application'){\n        return true;\n    }\n    else{\n        return false;\n    }\n\n})()\n",
+          "label": "ByApplication"
+        },
+        {
+          "id": "a342becfc4fa449c96084c94012c01f8",
+          "edgeType": "Edge",
+          "source": "48f486bbf54e4c8ebd05dd623ba6065d",
+          "target": "61cef5a6c7754835ab3e2913d91d7ea5",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "e19cba501644424da752c3f8ec4e9d0b",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "176fb7cde2ee41b6ac8b4b116802928d",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return (vaInputs.selecttarget == 'table');\n})()\n",
+          "label": "ByTable"
+        },
+        {
+          "id": "5466ae34ed7745dc9213887566010469",
+          "edgeType": "Edge",
+          "source": "176fb7cde2ee41b6ac8b4b116802928d",
+          "target": "583982ccc63945ef8bc9a5e340212217",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "ecb4aa912f434053a78c01b2be7a1f2f",
+          "edgeType": "Branch",
+          "source": "dece5db3c5f044e08cae6e5bb3cf4f75",
+          "target": "e9a8d27058d142ad91b9765f97d508a2",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return false;\n})()\n",
+          "label": "Suite"
+        },
+        {
+          "id": "a0284554c2374c85be20e52c6c5afac0",
+          "edgeType": "Edge",
+          "source": "e9a8d27058d142ad91b9765f97d508a2",
+          "target": "28abadbc9d8d4f19b2abd6b9d12676f3",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "e23b586a03324c069d459460c5bb4b51",
+          "edgeType": "Edge",
+          "source": "583982ccc63945ef8bc9a5e340212217",
+          "target": "1f498a32d4034c4cbbee65fbfeed8ba5",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "c8e87d1d44ae4623a5849c053c6c0a1e",
+          "edgeType": "Edge",
+          "source": "1f498a32d4034c4cbbee65fbfeed8ba5",
+          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "72379851e6684abd913461e93d778d8f",
+          "edgeType": "Branch",
+          "source": "dece5db3c5f044e08cae6e5bb3cf4f75",
+          "target": "a7a2e19ab4814cf0a3074951eccf69fd",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return false;\n})()\n",
+          "label": "Always"
+        },
+        {
+          "id": "d6d4641fed7747668879c7fd92171f4d",
+          "edgeType": "Edge",
+          "source": "a7a2e19ab4814cf0a3074951eccf69fd",
+          "target": "28abadbc9d8d4f19b2abd6b9d12676f3",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "6810f285704d438e8e259baedf9fed43",
+          "edgeType": "Branch",
+          "source": "dece5db3c5f044e08cae6e5bb3cf4f75",
+          "target": "28abadbc9d8d4f19b2abd6b9d12676f3",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return true;\n})()\n",
+          "label": "Always"
+        }
+      ]
+    }
+  },
+  "variables": {
+    "8741ccf2b12a493cadc41e71409d728f": {
+      "id": "8741ccf2b12a493cadc41e71409d728f",
+      "name": "selecttarget",
+      "label": "SelectTarget",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "An entire scoped  application",
+          "value": "application"
+        },
+        {
+          "label": "A specific table",
+          "value": "table"
+        },
+        {
+          "label": "Comma separated list of tables",
+          "value": "tableList"
+        }
+      ]
+    },
+    "3907e998400b432a8526fc0e185dd0bf": {
+      "id": "3907e998400b432a8526fc0e185dd0bf",
+      "name": "appname",
+      "label": "AppName",
+      "varType": "reference",
+      "table": "cmdb_ci_endpoint_app"
+    },
+    "0fdcf39a4e1a4f2ba7f5f8964a63c53f": {
+      "id": "0fdcf39a4e1a4f2ba7f5f8964a63c53f",
+      "name": "suiteortest",
+      "label": "Suiteortest",
+      "varType": "choice",
+      "choices": [
+        {
+          "label": "234",
+          "value": "45"
+        }
+      ]
+    },
+    "707eb06a56e94fca87a2dc98097cbf7f": {
+      "id": "707eb06a56e94fca87a2dc98097cbf7f",
+      "name": "tablename",
+      "label": "TableName",
+      "varType": "string"
+    },
+    "a0cc58cb27874a89aedc971c8422ac82": {
+      "id": "a0cc58cb27874a89aedc971c8422ac82",
+      "name": "namesuite",
+      "label": "NameSuite",
+      "varType": "string"
+    },
+    "23ebb18b77ee4b2c87be73b39e9b3d58": {
+      "id": "23ebb18b77ee4b2c87be73b39e9b3d58",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "testID",
+      "label": "testID",
+      "varType": "script"
+    }
+  }
+}</graph>
+        <key_phrases>Create ATF Tests</key_phrases>
+        <live_agent>false</live_agent>
+        <name>Create ATF Tests</name>
+        <roles>admin</roles>
+        <sys_class_name>sys_cb_topic</sys_class_name>
+        <sys_created_by>jay.freise@servicenow.com</sys_created_by>
+        <sys_created_on>2018-09-10 19:46:24</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>f6698a50db24a740a9b45b3e5e9619a8</sys_id>
+        <sys_mod_count>23</sys_mod_count>
+        <sys_name>Create ATF Tests</sys_name>
+        <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
+        <sys_update_name>sys_cb_topic_f6698a50db24a740a9b45b3e5e9619a8</sys_update_name>
+        <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
+        <sys_updated_on>2018-09-11 04:03:56</sys_updated_on>
+        <variables/>
+    </sys_cb_topic>
+    <sys_variable_value action="delete_multiple" query="document_key=f6698a50db24a740a9b45b3e5e9619a8"/>
+</record_update>

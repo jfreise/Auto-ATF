@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_auto_atf.AutoATF</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>AutoATF</name>
+        <script><![CDATA[var AutoATF = Class.create();
+
+AutoATF.prototype = {
+	initialize : function(){},
+		
+		CreateSuiteByApplication: function(suiteName, appName){
+			var newSuiteID;
+			
+			//Query to see if already created.
+			var checkIfExist = new GlideRecord('sys_atf_test_suite');
+			checkIfExist.addQuery('name=Auto-generated suite for ' + suiteName + ' schema tests');
+			checkIfExist.query();
+			if (!checkIfExist.next()){
+				gs.info('Suite does not exist. Proceeding with suite creation...');
+				
+				//Create the Suite
+				var newSuite = new GlideRecord('sys_atf_test_suite');
+				newSuite.initialize();
+				newSuite.name = 'Auto-generated suite for ' + suiteName + ' schema tests';
+				newSuite.description= 'Auto-generated suite for ' + suiteName + ' schema tests - DO NOT MODIFY';
+				newSuiteID = newSuite.insert();
+				gs.info('Completed suite creation...');
+			}
+			else{
+				newSuiteID = checkIfExist.sys_id;
+			}
+			
+			var newSchemaTest;
+			
+			//get all the tables for this suite,
+			myTablesToTest = new GlideRecord('sys_db_object');
+			myTablesToTest.addQuery('sys_scope.name=' + appName);
+			myTablesToTest.query();
+			while (myTablesToTest.next()){
+				//For each table, generate the test
+				newSchemaTest = this._generateTestsForTable(myTablesToTest.name);
+				this._addTestToSuite(newSuiteID, newSchemaTest);
+				break; //un-comment to do just one
+			}
+			
+		},
+		
+		CreateSuiteByTable: function(suiteName, tableQuery){
+			var newSuiteID;
+			
+			//Query to see if already created.
+			var checkIfExist = new GlideRecord('sys_atf_test_suite');
+			checkIfExist.addQuery('name=Auto-generated suite for ' + suiteName + ' schema tests');
+			checkIfExist.query();
+			if (!checkIfExist.next()){
+				//Create the Suite
+				var newSuite = new GlideRecord('sys_atf_test_suite');
+				newSuite.initialize();
+				newSuite.name = 'Auto-generated suite for ' + suiteName + ' schema tests';
+				newSuite.description= 'Auto-generated suite for ' + suiteName + ' schema tests - DO NOT MODIFY';
+				newSuiteID = newSuite.insert();
+			}
+			else{
+				newSuiteID = checkIfExist.sys_id;
+			}
+			
+			var newSchemaTest;
+			//get all the tables for this suite,
+			myTablesToTest = new GlideRecord('sys_db_object');
+			myTablesToTest.addQuery('name = ' + tableQuery);
+			myTablesToTest.query();
+			while (myTablesToTest.next()){
+				//For each table, generate the test
+				newSchemaTest = this.GenerateTestsForTable(myTablesToTest.name);
+				this._addTestToSuite(newSuiteID, newSchemaTest);
+				//break; //un-comment to do just one
+			}
+		},
+		
+		GenerateTestsForTable: function(tableName){
+			
+			var iTestStepOrder = 0;
+			
+			//Query to see if already created.
+			var checkIfExist = new GlideRecord('sys_atf_test');
+			checkIfExist.addQuery('name=Auto-generated schema test for ' + tableName);
+			checkIfExist.query();
+			if (!checkIfExist.next()){
+				gs.info('Test does not exist. Proceeding with test creation...');
+				
+				//Create the Test for the column
+				var columnTest = new GlideRecord('sys_atf_test');
+				columnTest.initialize();
+				columnTest.name = 'Auto-generated schema test for ' + tableName;
+				columnTest.description= 'Auto-generated schema test for ' + tableName;
+				var testSysID = columnTest.insert();
+				
+				//-----------------------------------------------------------------------------
+				//   Loop through all colums for this table
+				//-----------------------------------------------------------------------------
+				var scannedColumn= new GlideRecord('sys_dictionary');
+				scannedColumn.addQuery('name=' + tableName);
+				scannedColumn.addNotNullQuery('column_name');
+				scannedColumn.query();
+				
+				while (scannedColumn.next()) {
+					iTestStepOrder ++;
+					gs.info('Creating test step for column: ' + scannedColumn.name + '(' + scannedColumn.internal_type + ')');
+					
+					//Create test step for each column's attribute
+					var columnTestStep = new GlideRecord('sys_atf_step');
+					columnTestStep.newRecord();
+					columnTestStep.order = iTestStepOrder;
+					columnTestStep.test = testSysID;
+					columnTestStep.description = 'Test step for ' + scannedColumn.name + '.' + scannedColumn.element + '(' + scannedColumn.internal_type + ')';
+					columnTestStep.assert_type = 'Record successfully validated';
+					columnTestStep.timeout = '1970-01-01 00:00:05';
+					columnTestStep.step_config.setDisplayValue('Record Validation');
+					columnTestStep.table.setDisplayValue('sys_dictionary');
+					columnTestStep.record_id = scannedColumn.sys_id;
+					//columnTestStep.setWorkflow(false);
+					columnTestStep.update();
+					
+					//-----------------------------------------------------------------------------
+					//   Update default variables created with a Record Validation test step type
+					//-----------------------------------------------------------------------------
+					//gs.print('Updating the Table value to sys_dictionary');
+					var recordVar1 = new GlideRecord('sys_variable_value');
+					recordVar1.addQuery('document=sys_atf_step^document_key=' + columnTestStep.sys_id + '^order=100^value!=record_validated^ORvalue=NULL');
+					recordVar1.query();
+					while (recordVar1.next()){
+						recordVar1.value.setDisplayValue('sys_dictionary');
+						recordVar1.update();
+					}
+					
+					gs.info('Updating the Record value to the current column = ' + scannedColumn.sys_id);
+					var recordVar2 = new GlideRecord('sys_variable_value');
+					recordVar2.addQuery('document=sys_atf_step^document_key=' + columnTestStep.sys_id + '^order=200^value!=record_validated^ORvalue=NULL');
+					recordVar2.query();
+					while (recordVar2.next()){
+						recordVar2.value = scannedColumn.sys_id;
+						recordVar2.update();
+					}
+					
+					gs.info('Updating the Field values to the current column.');
+					var recordVar3 = new GlideRecord('sys_variable_value');
+					recordVar3.addQuery('document=sys_atf_step^document_key=' + columnTestStep.sys_id + '^order=300^value!=record_validated^ORvalue=NULL');
+					recordVar3.query();
+					while (recordVar3.next()){
+						//This is where we test all the attributes - just the main ones (17)
+						recordVar3.value = 'attributes=' + scannedColumn.attributes + '^active=' + scannedColumn.active + '^max_length=' + scannedColumn.max_length + '^choice=' + scannedColumn.choice + '^column_label=' + scannedColumn.column_label + '^internal_type=' + scannedColumn.internal_type + '^display=' + scannedColumn.display + '^mandatory=' + scannedColumn.mandatory + '^text_index=' + scannedColumn.text_index + '^unique=' + scannedColumn.unique + '^dependent=' + scannedColumn.dependent + '^read_only=' + scannedColumn.read_only + '^sys_scope=' + scannedColumn.sys_scope + '^choice_field=' + scannedColumn.choice_field + '^choice_table=' + scannedColumn.choice_table + '^reference=' + scannedColumn.reference + '^internal_type=' + scannedColumn.internal_type + '^EQ';
+						recordVar3.update();
+					}
+					
+				}
+				return testSysID;
+			} //checkIfExist
+			else{
+				gs.info('Test already exists for ' + 'Auto-generated test for ' + tableName  + ' column schemas.');
+				return checkIfExist.sys_id;
+			}
+		},
+		
+		_addTestToSuite: function(currentSuite, currentTest){
+			//Query to see if already created.
+			var checkIfExist = new GlideRecord('sys_atf_test_suite_test');
+			checkIfExist.addQuery('test_suite=' + currentSuite + '^test=' + currentTest);
+			checkIfExist.query();
+			if (!checkIfExist.next()){
+				gs.info('Suite test does not exist. Proceeding with adding test to suite...');
+				
+				//Create the Test for the column
+				var newSuiteTest = new GlideRecord('sys_atf_test_suite_test');
+				newSuiteTest.initialize();
+				newSuiteTest.name = 'Auto-added test ' + currentTest + ' to suite ' + currentSuite;
+				newSuiteTest.description= 'Auto-generated suite test - DO NOT MODIFY';
+				newSuiteTest.test = currentTest;
+				newSuiteTest.test_suite = currentSuite;
+				var suiteTestSysID = newSuiteTest .insert();
+				return suiteTestSysID;
+			}
+			else{
+				gs.info('Test ' + currentTest + ' already exists in suite ' + currentSuite);
+				return checkIfExist.sys_id;
+			}
+		},
+		
+		type: 'AutoATF'
+	};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>jay.freise@servicenow.com</sys_created_by>
+        <sys_created_on>2018-09-10 19:18:21</sys_created_on>
+        <sys_id>1b2c7918dbe0a740a9b45b3e5e961956</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>AutoATF</sys_name>
+        <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
+        <sys_update_name>sys_script_include_1b2c7918dbe0a740a9b45b3e5e961956</sys_update_name>
+        <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
+        <sys_updated_on>2018-09-11 03:56:29</sys_updated_on>
+    </sys_script_include>
+</record_update>
