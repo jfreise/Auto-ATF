@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_test_suite_test">
+    <sys_atf_test_suite_test action="INSERT_OR_UPDATE">
+        <abort_on_failure>false</abort_on_failure>
+        <order/>
+        <sys_class_name>sys_atf_test_suite_test</sys_class_name>
+        <sys_created_by>jay.freise@servicenow.com</sys_created_by>
+        <sys_created_on>2018-09-11 05:45:23</sys_created_on>
+        <sys_id>348294a8dba8a740a9b45b3e5e961994</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>71709424dba8a740a9b45b3e5e9619ab</sys_name>
+        <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
+        <sys_update_name>sys_atf_test_suite_test_348294a8dba8a740a9b45b3e5e961994</sys_update_name>
+        <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
+        <sys_updated_on>2018-09-11 05:45:23</sys_updated_on>
+        <test display_value="Auto-generated schema test for sys_ui_policy_action">cc8294a8dba8a740a9b45b3e5e961933</test>
+        <test_suite display_value="Auto-generated suite for SYSTEM schema tests">71709424dba8a740a9b45b3e5e9619ab</test_suite>
+    </sys_atf_test_suite_test>
+</record_update>

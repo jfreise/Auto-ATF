@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_test">
+    <sys_atf_test action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description>Auto-generated schema test for sys_app_application</description>
+        <name>Auto-generated schema test for sys_app_application</name>
+        <remember/>
+        <sys_class_name>sys_atf_test</sys_class_name>
+        <sys_created_by>jay.freise@servicenow.com</sys_created_by>
+        <sys_created_on>2018-09-11 05:36:40</sys_created_on>
+        <sys_id>49805824dba8a740a9b45b3e5e961928</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Auto-generated schema test for sys_app_application</sys_name>
+        <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
+        <sys_update_name>sys_atf_test_49805824dba8a740a9b45b3e5e961928</sys_update_name>
+        <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
+        <sys_updated_on>2018-09-11 05:36:40</sys_updated_on>
+    </sys_atf_test>
+    <sys_variable_value action="delete_multiple" query="document_key=49805824dba8a740a9b45b3e5e961928"/>
+</record_update>

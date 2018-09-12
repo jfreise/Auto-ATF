@@ -20,7 +20,7 @@
           "stepType": "Start",
           "name": "Start",
           "greetingResponse": {
-            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }\n    */\n    return 'Hi, ' + gs.getUser().getFirstName() + '. I can generate automated ATF tests for specific tables or an entire application.';\n})()\n",
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }\n    */\n    return 'Hi, ' + gs.getUser().getFirstName() + '. I can generate automated ATF tests for specific tables or an entire application. I create tests for tables schemas so that you know when database structures have been modified, which could lead to a negative impact.';\n})()\n",
             "mode": "script"
           }
         },
@@ -29,7 +29,7 @@
           "stepType": "TerminateGoal",
           "name": "End",
           "confirmationMessage": {
-            "value": "Your tests have been automatically generated.",
+            "value": "I just saved you 4.35 hours by auto-creating these tests.",
             "mode": "simple"
           }
         },
@@ -64,8 +64,8 @@
         },
         "61cef5a6c7754835ab3e2913d91d7ea5": {
           "id": "61cef5a6c7754835ab3e2913d91d7ea5",
-          "name": "BuildAppSuite",
-          "script": "(function execute() {\n    /* Code your scripted action here. For example, you might update a \n       record based on conditional logic:\n    \n        if (vaVars.my_flag == 'say hello') {\n            vaInputs.selected_incident.short_description = 'hi there';\n        } else {\n            vaInputs.selected_incident.short_description = 'bye now';\n        }        \n        vaInputs.selected_incident.update();\n    */\n    var myATF =new AutoATF();\n    //myATF.CreateSuiteByApplication(vaInputs.namesuite,vaInputs.appname.getDisplayValue());\n    myATF.CreateSuiteByApplication('TestSuiteName1','Benchmark Client');\n})()\n",
+          "name": "BuildAppSuiteTest",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    myATF.CreateSuiteByApplication(vaInputs.appname.getDisplayValue(),vaInputs.appname.getDisplayValue());\n    vaVars.testLink = 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test_suite.do%3Fsys_id%3D' + vaVars.testID;\n    vaVars.linkLabel = 'Auto-generated suite for ' + vaInputs.appname.getDisplayValue();\n})()\n",
           "stepType": "ScriptAction",
           "applicability": ""
         },
@@ -93,7 +93,7 @@
           "variableId": "3907e998400b432a8526fc0e185dd0bf",
           "id": "48f486bbf54e4c8ebd05dd623ba6065d",
           "mode": "external",
-          "script": "(function execute() {\n\n        var options = [];\n        var gr = new GlideRecord('sys_scope');\n        //gr.addEncodedQuery('active=true^numberSTARTSWITHINC001001');\n        //gr.setLimit(10);\n        gr.query();\n        while(gr.next()) {\n            options.push({ 'value': gr.getUniqueValue(), 'label': gr.getValue('name') });\n        }\n        return options;\n\n\n \n})()\n",
+          "script": "(function execute() {\n\n        var options = [];\n        var gr = new GlideRecord('sys_scope');\n        //gr.addEncodedQuery('active=true^numberSTARTSWITHINC001001');\n        //gr.setLimit(10);\n        gr.orderBy('name');\n        gr.query();\n        while(gr.next()) {\n            options.push({ 'value': gr.getUniqueValue(), 'label': gr.getValue('name') });\n        }\n        return options;\n\n\n \n})()\n",
           "noRecordsResponseMsg": {
             "value": "You do not have access to any apps.",
             "mode": "simple"
@@ -125,8 +125,8 @@
         },
         "583982ccc63945ef8bc9a5e340212217": {
           "id": "583982ccc63945ef8bc9a5e340212217",
-          "name": "BuildTest",
-          "script": "(function execute() {\n    var myATF =new AutoATF();\n    vaVars.testID = myATF.GenerateTestsForTable(vaInputs.tablename);\n})()\n",
+          "name": "BuildTableTest",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    vaVars.testID = myATF.GenerateTestsForTable(vaInputs.tablename);\n    vaVars.testLink = 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test.do%3Fsys_id%3D' + vaVars.testID;\n    vaVars.linkLabel = 'Auto-generated suite for ' + vaInputs.tablename.getDisplayValue();\n\n})()\n",
           "stepType": "ScriptAction",
           "applicability": ""
         },
@@ -159,24 +159,6 @@
           },
           "variableId": "a0cc58cb27874a89aedc971c8422ac82"
         },
-        "1f498a32d4034c4cbbee65fbfeed8ba5": {
-          "id": "1f498a32d4034c4cbbee65fbfeed8ba5",
-          "stepType": "LinkOutput",
-          "name": "TestLink",
-          "url": {
-            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }4b65da8cdb686740a9b45b3e5e9619b9\n    */\n    return 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test.do%3Fsys_id%3D' + vaVars.testID;;\n})()\n",
-            "mode": "script"
-          },
-          "label": {
-            "value": "Auto-generated Test",
-            "mode": "simple"
-          },
-          "header": {
-            "value": "Here is the link to your test.",
-            "mode": "simple"
-          },
-          "applicability": ""
-        },
         "a7a2e19ab4814cf0a3074951eccf69fd": {
           "stepType": "ChoicePrompt",
           "name": "suiteortest",
@@ -200,9 +182,66 @@
           },
           "variableId": "0fdcf39a4e1a4f2ba7f5f8964a63c53f",
           "id": "a7a2e19ab4814cf0a3074951eccf69fd"
+        },
+        "8c25b8c6f94e42f58f21c9f564a5953b": {
+          "id": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "stepType": "LinkOutput",
+          "name": "suiteTestLink",
+          "url": {
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }\n    */\n    return vaVars.testLink;\n})()\n",
+            "mode": "script"
+          },
+          "label": {
+            "value": "(function execute() {\n    /* Return a quoted string.  For example:\n\n       var result;\n       if (vaInputs.first_name == 'Bill') {\n           return gs.getMessage('hi there {0}', [vaInputs.first_name]);\n       } else {\n           return gs.getMessage('how are you {0}', [vaInputs.last_name]);\n       }\n    */\n    return vaVars.linkLabel;\n})()\n",
+            "mode": "script"
+          },
+          "header": {
+            "value": "Your tests have been created.",
+            "mode": "simple"
+          },
+          "applicability": ""
+        },
+        "4f21e77a5fa84a7d98e0015b972011ce": {
+          "id": "4f21e77a5fa84a7d98e0015b972011ce",
+          "name": "BuildCMDBTests",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    myATF.CreateSuiteByTable('CMDB','sys_update_nameISNOTEMPTY^GOTOnameSTARTSWITHcmdb');\n    vaVars.testLink = 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test_suite.do%3Fsys_id%3D' + vaVars.testID;\n    vaVars.linkLabel = 'Auto-generated test suite for CMDB';\n\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": ""
+        },
+        "1e4ae226beba4466bac6117d8c14383b": {
+          "id": "1e4ae226beba4466bac6117d8c14383b",
+          "name": "BuildSystemTables",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    myATF.CreateSuiteByTable('SYSTEM','sys_update_nameISNOTEMPTY^GOTOnameSTARTSWITHsys_');\n    vaVars.testLink = 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test_suite.do%3Fsys_id%3D' + vaVars.testID;\n    vaVars.linkLabel = 'Auto-generated test suite for SYSTEM';\n\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": ""
+        },
+        "4445f0645b494784812d3967cb6c42ae": {
+          "id": "4445f0645b494784812d3967cb6c42ae",
+          "name": "BuildITSMTables",
+          "script": "(function execute() {\n    var myATF =new AutoATF();\n    myATF.CreateSuiteByTable('ITSM-Platform','sys_update_nameISNOTEMPTY^GOTOnameNOT LIKEsys_^nameNOT LIKEcmdb^sys_scope=5f4ef4ed9f401200b18a7feea57fcfbe^ORsys_scope=18351d53eb32120034d1eeea1206fe79^ORsys_scope=cdcf033467020300b410afa00585ef2b^ORsys_scope=1ae06f355710130034d169202d94f92e^ORsys_scope=2efa4be5db0003004d27b31be0b8f5e9^ORsys_scope=global^ORsys_scope=1da803b9b3b10300f686a72256a8dcbc');\n    vaVars.testLink = 'https://' + gs.getProperty('instance_name') + '.service-now.com/nav_to.do?uri=%2Fsys_atf_test_suite.do%3Fsys_id%3D' + vaVars.testID;\n    vaVars.linkLabel = 'Auto-generated test suite for ITSM-Platform';\n})()\n",
+          "stepType": "ScriptAction",
+          "applicability": ""
         }
       },
       "edges": [
+        {
+          "id": "e23b586a03324c069d459460c5bb4b51",
+          "edgeType": "Edge",
+          "source": "583982ccc63945ef8bc9a5e340212217",
+          "target": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "dd9ffd3a236747db9f3d23a97a38c10c",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "48f486bbf54e4c8ebd05dd623ba6065d",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    var returnValue = false;\n    if (vaInputs.selecttarget == 'application'){\n        return true;\n    }\n    else{\n        return false;\n    }\n\n})()\n",
+          "label": "ByApplication"
+        },
         {
           "id": "5f3d329730c44611bca8f5b9655eca80",
           "edgeType": "Edge",
@@ -226,26 +265,8 @@
           "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
           "sourcePort": "",
           "targetPort": "",
-          "expression": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return false;\n})()\n",
-          "label": "Cancel"
-        },
-        {
-          "id": "f8f6ea0dbe2c415a80ad746c246751b6",
-          "edgeType": "Edge",
-          "source": "61cef5a6c7754835ab3e2913d91d7ea5",
-          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
-          "sourcePort": "",
-          "targetPort": ""
-        },
-        {
-          "id": "dd9ffd3a236747db9f3d23a97a38c10c",
-          "edgeType": "Branch",
-          "source": "7fab532e456c4cd69bda2bf9e496b919",
-          "target": "48f486bbf54e4c8ebd05dd623ba6065d",
-          "sourcePort": "",
-          "targetPort": "",
-          "expression": "(function execute() {\n    var returnValue = false;\n    if (vaInputs.selecttarget == 'application'){\n        return true;\n    }\n    else{\n        return false;\n    }\n\n})()\n",
-          "label": "ByApplication"
+          "expression": "(function execute() {\n    /* Return true or false to indicate the branch condition's applicability.\n       For example:\n\n       var applies = vaInputs.first_name == 'Bill' ? true : false;\n       return applies;\n    */\n    return (vaInputs.selecttarget == 'tableQuery');\n})()\n",
+          "label": "CustomQuery"
         },
         {
           "id": "a342becfc4fa449c96084c94012c01f8",
@@ -292,22 +313,6 @@
           "targetPort": ""
         },
         {
-          "id": "e23b586a03324c069d459460c5bb4b51",
-          "edgeType": "Edge",
-          "source": "583982ccc63945ef8bc9a5e340212217",
-          "target": "1f498a32d4034c4cbbee65fbfeed8ba5",
-          "sourcePort": "",
-          "targetPort": ""
-        },
-        {
-          "id": "c8e87d1d44ae4623a5849c053c6c0a1e",
-          "edgeType": "Edge",
-          "source": "1f498a32d4034c4cbbee65fbfeed8ba5",
-          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
-          "sourcePort": "",
-          "targetPort": ""
-        },
-        {
           "id": "72379851e6684abd913461e93d778d8f",
           "edgeType": "Branch",
           "source": "dece5db3c5f044e08cae6e5bb3cf4f75",
@@ -334,6 +339,76 @@
           "targetPort": "",
           "expression": "(function execute() {\n    return true;\n})()\n",
           "label": "Always"
+        },
+        {
+          "id": "f8f6ea0dbe2c415a80ad746c246751b6",
+          "edgeType": "Edge",
+          "source": "61cef5a6c7754835ab3e2913d91d7ea5",
+          "target": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "d5f89530d4d741c9aec1261a65e3997d",
+          "edgeType": "Edge",
+          "source": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "target": "b58cc7f7a5774fcfa9d46aa62806dcfd",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "3b1fdfa686ab4ec582d6821ebdb8659d",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "4f21e77a5fa84a7d98e0015b972011ce",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return (vaInputs.selecttarget == 'cmdbTables');\n})()\n",
+          "label": "CMDBTables"
+        },
+        {
+          "id": "4c35c8372e724b6aa9cc0cdd4f0ef5e3",
+          "edgeType": "Edge",
+          "source": "4f21e77a5fa84a7d98e0015b972011ce",
+          "target": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "25f6fa20785446759770b06d0fc1dd1e",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "1e4ae226beba4466bac6117d8c14383b",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return (vaInputs.selecttarget == 'systemTables');\n})()\n",
+          "label": "SystemTables"
+        },
+        {
+          "id": "0f0498ae015f4e6896fd2eda1d70a001",
+          "edgeType": "Edge",
+          "source": "1e4ae226beba4466bac6117d8c14383b",
+          "target": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "sourcePort": "",
+          "targetPort": ""
+        },
+        {
+          "id": "c22c63efb5494e2e9a7ba9c83d8853ca",
+          "edgeType": "Branch",
+          "source": "7fab532e456c4cd69bda2bf9e496b919",
+          "target": "4445f0645b494784812d3967cb6c42ae",
+          "sourcePort": "",
+          "targetPort": "",
+          "expression": "(function execute() {\n    return (vaInputs.selecttarget == 'itsmTables');\n})()\n",
+          "label": "ITSMTables"
+        },
+        {
+          "id": "fc805475fb7845bb89349dae57ca7ecc",
+          "edgeType": "Edge",
+          "source": "4445f0645b494784812d3967cb6c42ae",
+          "target": "8c25b8c6f94e42f58f21c9f564a5953b",
+          "sourcePort": "",
+          "targetPort": ""
         }
       ]
     }
@@ -354,8 +429,20 @@
           "value": "table"
         },
         {
-          "label": "Comma separated list of tables",
-          "value": "tableList"
+          "label": "Custom query of tables",
+          "value": "tableQuery"
+        },
+        {
+          "label": "All System tables",
+          "value": "systemTables"
+        },
+        {
+          "label": "All CMDB tables",
+          "value": "cmdbTables"
+        },
+        {
+          "label": "All ITSM and Platform tables",
+          "value": "itsmTables"
         }
       ]
     },
@@ -399,10 +486,30 @@
       "name": "testID",
       "label": "testID",
       "varType": "script"
+    },
+    "06f88f4709064aaf8f74c99851e94bd9": {
+      "id": "06f88f4709064aaf8f74c99851e94bd9",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "testLink",
+      "label": "testLink",
+      "varType": "script"
+    },
+    "30284710edd94d728fb69eba69fd649f": {
+      "id": "30284710edd94d728fb69eba69fd649f",
+      "value": {
+        "value": "",
+        "mode": "simple"
+      },
+      "name": "linkLabel",
+      "label": "linkLabel",
+      "varType": "script"
     }
   }
 }</graph>
-        <key_phrases>Create ATF Tests</key_phrases>
+        <key_phrases>Create ATF Tests,ATF</key_phrases>
         <live_agent>false</live_agent>
         <name>Create ATF Tests</name>
         <roles>admin</roles>
@@ -411,14 +518,14 @@
         <sys_created_on>2018-09-10 19:46:24</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_id>f6698a50db24a740a9b45b3e5e9619a8</sys_id>
-        <sys_mod_count>23</sys_mod_count>
+        <sys_mod_count>35</sys_mod_count>
         <sys_name>Create ATF Tests</sys_name>
         <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
         <sys_policy/>
         <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
         <sys_update_name>sys_cb_topic_f6698a50db24a740a9b45b3e5e9619a8</sys_update_name>
         <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
-        <sys_updated_on>2018-09-11 04:03:56</sys_updated_on>
+        <sys_updated_on>2018-09-11 20:42:38</sys_updated_on>
         <variables/>
     </sys_cb_topic>
     <sys_variable_value action="delete_multiple" query="document_key=f6698a50db24a740a9b45b3e5e9619a8"/>

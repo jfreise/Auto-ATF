@@ -20,7 +20,7 @@ AutoATF.prototype = {
 			checkIfExist.addQuery('name=Auto-generated suite for ' + suiteName + ' schema tests');
 			checkIfExist.query();
 			if (!checkIfExist.next()){
-				gs.info('Suite does not exist. Proceeding with suite creation...');
+				gs.info('Suite does not exist. Proceeding with suite creation for app ' + appName);
 				
 				//Create the Suite
 				var newSuite = new GlideRecord('sys_atf_test_suite');
@@ -35,16 +35,16 @@ AutoATF.prototype = {
 			}
 			
 			var newSchemaTest;
-			
+			gs.info('Suite for app ' + appName);
 			//get all the tables for this suite,
 			myTablesToTest = new GlideRecord('sys_db_object');
 			myTablesToTest.addQuery('sys_scope.name=' + appName);
 			myTablesToTest.query();
 			while (myTablesToTest.next()){
 				//For each table, generate the test
-				newSchemaTest = this._generateTestsForTable(myTablesToTest.name);
+				newSchemaTest = this.GenerateTestsForTable(myTablesToTest.name);
 				this._addTestToSuite(newSuiteID, newSchemaTest);
-				break; //un-comment to do just one
+				//break; //un-comment to do just one
 			}
 			
 		},
@@ -71,7 +71,7 @@ AutoATF.prototype = {
 			var newSchemaTest;
 			//get all the tables for this suite,
 			myTablesToTest = new GlideRecord('sys_db_object');
-			myTablesToTest.addQuery('name = ' + tableQuery);
+			myTablesToTest.addQuery(tableQuery);
 			myTablesToTest.query();
 			while (myTablesToTest.next()){
 				//For each table, generate the test
@@ -195,13 +195,13 @@ AutoATF.prototype = {
         <sys_created_by>jay.freise@servicenow.com</sys_created_by>
         <sys_created_on>2018-09-10 19:18:21</sys_created_on>
         <sys_id>1b2c7918dbe0a740a9b45b3e5e961956</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>20</sys_mod_count>
         <sys_name>AutoATF</sys_name>
         <sys_package display_value="Auto-ATF" source="x_snc_auto_atf">92fa39d4dbe0a740a9b45b3e5e961963</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Auto-ATF">92fa39d4dbe0a740a9b45b3e5e961963</sys_scope>
         <sys_update_name>sys_script_include_1b2c7918dbe0a740a9b45b3e5e961956</sys_update_name>
         <sys_updated_by>jay.freise@servicenow.com</sys_updated_by>
-        <sys_updated_on>2018-09-11 03:56:29</sys_updated_on>
+        <sys_updated_on>2018-09-11 05:19:18</sys_updated_on>
     </sys_script_include>
 </record_update>
